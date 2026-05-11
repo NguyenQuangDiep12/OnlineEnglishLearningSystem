@@ -27,7 +27,7 @@ class ProfileController extends Controller
     public function edit()
     {
         $user = User::findOrFail(session('user_id'));
-        return view('pages.profile-edit', compact('user'));
+        return view('pages.profile-edit', compact('user')); // sua doan nay thanh popup sua tren trang profile
     }
 
     public function update(Request $request)

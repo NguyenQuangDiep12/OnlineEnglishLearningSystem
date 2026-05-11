@@ -9,7 +9,6 @@
 @section('content')
 <div style="max-width:760px;margin:0 auto;">
 
-    {{-- Kết quả tổng --}}
     <div class="dash-card" style="text-align:center;padding:40px 32px 32px;margin-bottom:20px;">
         @php $score = round($attempt->score); @endphp
 
@@ -54,7 +53,6 @@
         </div>
     </div>
 
-    {{-- Chi tiết từng câu --}}
     <div class="dash-card">
         <div class="dash-card__header">
             <h3 class="dash-card__title">Chi tiết đáp án</h3>
@@ -83,9 +81,16 @@
                     <p style="font-size:13px;color:#475569;margin-bottom:4px;">
                         <span style="color:#94a3b8;">Câu trả lời:</span>
                         <span style="color:{{ $answer->is_correct ? '#16a34a' : '#dc2626' }};font-weight:600;">
-                            {{ $answer->answer_text }}
+                            @php
+                                // Hiển thị đẹp cho multiple choice (JSON array)
+                                $answerText = $answer->answer_text;
+                                $decoded = json_decode($answerText, true);
+                                echo is_array($decoded) ? 'Đã chọn ' . count($decoded) . ' đáp án' : e($answerText);
+                            @endphp
                         </span>
                     </p>
+                    @else
+                    <p style="font-size:13px;color:#94a3b8;margin-bottom:4px;">Không trả lời</p>
                     @endif
                     <span style="font-size:12px;color:#94a3b8;">
                         {{ $answer->points_earned }}/{{ $answer->question->points ?? 1 }} điểm

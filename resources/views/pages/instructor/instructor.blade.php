@@ -83,13 +83,4 @@
     </div>
 </section>
 
-{{-- Become Instructor CTA --}}
-<section class="cta-section">
-    <div class="cta-section__inner">
-        <h2>Bạn muốn trở thành giảng viên?</h2>
-        <p>Chia sẻ kiến thức của bạn với hàng nghìn học viên trên khắp cả nước.</p>
-        <a href="/become-instructor" class="btn btn--secondary">Đăng ký giảng dạy →</a>
-    </div>
-</section>
-
 @endsection

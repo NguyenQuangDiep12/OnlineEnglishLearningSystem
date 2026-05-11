@@ -1,0 +1,505 @@
+@use '../abstracts/variables' as *;
+
+// ======================================================
+// ROADMAP PAGE
+// ======================================================
+
+.page-header--roadmap {
+    background:
+        linear-gradient(
+            rgba(15, 23, 42, .75),
+            rgba(15, 23, 42, .82)
+        ),
+        url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1600&auto=format&fit=crop');
+
+    background-size: cover;
+    background-position: center;
+
+    text-align: center;
+    color: white;
+
+    padding: 110px 0 90px;
+
+    h1 {
+        font-size: 52px;
+        font-weight: 800;
+        margin-bottom: 16px;
+        line-height: 1.1;
+    }
+
+    p {
+        font-size: 18px;
+        color: rgba(255,255,255,.82);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+}
+
+// ======================================================
+// GOALS
+// ======================================================
+
+.goals-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.goal-card {
+    position: relative;
+
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+
+    padding: 28px;
+
+    cursor: pointer;
+    overflow: hidden;
+
+    transition: .28s ease;
+
+    &:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(15,23,42,.08);
+    }
+
+    &__icon {
+        width: 68px;
+        height: 68px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 20px;
+
+        font-size: 30px;
+
+        margin-bottom: 22px;
+    }
+
+    h3 {
+        font-size: 20px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 10px;
+    }
+
+    p {
+        font-size: 14px;
+        color: #64748b;
+        line-height: 1.7;
+    }
+
+    &__arrow {
+        position: absolute;
+        right: 24px;
+        bottom: 22px;
+
+        font-size: 24px;
+        font-weight: 700;
+
+        color: #94a3b8;
+
+        transition: .25s ease;
+    }
+
+    &:hover &__arrow {
+        transform: translateX(6px);
+        color: rgb(40,40,254);
+    }
+
+    &--blue .goal-card__icon {
+        background: rgba(59,130,246,.12);
+    }
+
+    &--green .goal-card__icon {
+        background: rgba(16,185,129,.12);
+    }
+
+    &--orange .goal-card__icon {
+        background: rgba(249,115,22,.12);
+    }
+
+    &--purple .goal-card__icon {
+        background: rgba(139,92,246,.12);
+    }
+
+    &--cyan .goal-card__icon {
+        background: rgba(6,182,212,.12);
+    }
+
+    &--red .goal-card__icon {
+        background: rgba(239,68,68,.12);
+    }
+}
+
+// ======================================================
+// ROADMAP DETAIL
+// ======================================================
+
+.roadmap-detail {
+    background: #0f172a;
+    color: white;
+}
+
+.roadmap-header {
+    text-align: center;
+    margin-bottom: 70px;
+
+    h2 {
+        font-size: 42px;
+        font-weight: 800;
+        margin-bottom: 14px;
+    }
+
+    p {
+        font-size: 17px;
+        color: #94a3b8;
+    }
+}
+
+// ======================================================
+// TIMELINE
+// ======================================================
+
+.roadmap-timeline {
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+.roadmap-phase {
+    display: flex;
+    gap: 28px;
+
+    &:not(:last-child) {
+        margin-bottom: 40px;
+    }
+}
+
+.phase-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.phase-dot {
+    width: 54px;
+    height: 54px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255,255,255,.08);
+
+    border: 2px solid rgba(255,255,255,.08);
+
+    color: white;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    &--active {
+        background: rgb(40,40,254);
+        border-color: rgb(40,40,254);
+        box-shadow: 0 0 0 8px rgba(40,40,254,.16);
+    }
+
+    &--gold {
+        background: linear-gradient(
+            135deg,
+            #f59e0b,
+            #facc15
+        );
+
+        border: none;
+
+        color: white;
+    }
+}
+
+.phase-line {
+    width: 3px;
+    flex: 1;
+
+    margin-top: 10px;
+
+    border-radius: 999px;
+
+    background: rgba(255,255,255,.08);
+}
+
+.phase-content {
+    flex: 1;
+
+    background: rgba(255,255,255,.04);
+
+    border: 1px solid rgba(255,255,255,.06);
+
+    border-radius: 24px;
+
+    padding: 28px;
+}
+
+.phase-header {
+    margin-bottom: 24px;
+
+    h3 {
+        font-size: 26px;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+}
+
+.phase-duration {
+    display: inline-block;
+
+    margin-bottom: 12px;
+
+    padding: 6px 14px;
+
+    border-radius: 999px;
+
+    background: rgba(40,40,254,.16);
+
+    color: #bfdbfe;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.phase-level {
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+// ======================================================
+// MINI COURSE
+// ======================================================
+
+.phase-courses {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.mini-course-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+
+    padding: 18px;
+
+    border-radius: 18px;
+
+    background: rgba(255,255,255,.05);
+
+    border: 1px solid rgba(255,255,255,.05);
+
+    transition: .25s ease;
+
+    &:hover {
+        transform: translateX(6px);
+        background: rgba(255,255,255,.08);
+    }
+
+    strong {
+        display: block;
+
+        font-size: 15px;
+        font-weight: 700;
+
+        margin-bottom: 6px;
+    }
+
+    span {
+        font-size: 13px;
+        color: #94a3b8;
+    }
+
+    &__gold {
+        background: linear-gradient(
+            135deg,
+            rgba(245,158,11,.18),
+            rgba(250,204,21,.12)
+        );
+    }
+}
+
+.mini-course-icon {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255,255,255,.08);
+
+    font-size: 24px;
+
+    flex-shrink: 0;
+}
+
+// ======================================================
+// CTA
+// ======================================================
+
+.roadmap-cta {
+    margin-top: 60px;
+
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+// ======================================================
+// LEVEL TEST
+// ======================================================
+
+.level-test__card {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+
+    padding: 50px;
+
+    border-radius: 32px;
+
+    overflow: hidden;
+
+    background: linear-gradient(
+        135deg,
+        rgb(40,40,254),
+        rgb(88,88,255)
+    );
+
+    color: white;
+}
+
+.level-test__content {
+    max-width: 620px;
+
+    h2 {
+        font-size: 38px;
+        font-weight: 800;
+        margin-bottom: 16px;
+    }
+
+    p {
+        font-size: 16px;
+        line-height: 1.8;
+        color: rgba(255,255,255,.82);
+
+        margin-bottom: 26px;
+    }
+}
+
+.level-test__decoration {
+    flex-shrink: 0;
+}
+
+.decoration-circle {
+    width: 140px;
+    height: 140px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255,255,255,.12);
+
+    border: 2px solid rgba(255,255,255,.14);
+
+    font-size: 64px;
+    font-weight: 800;
+}
+
+// ======================================================
+// RESPONSIVE
+// ======================================================
+
+@media (max-width: 1100px) {
+
+    .goals-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .level-test__card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .page-header--roadmap {
+        padding: 90px 0 70px;
+
+        h1 {
+            font-size: 38px;
+        }
+
+        p {
+            font-size: 15px;
+        }
+    }
+
+    .goals-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .roadmap-phase {
+        flex-direction: column;
+    }
+
+    .phase-marker {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .phase-line {
+        width: 60px;
+        height: 3px;
+        margin-top: 0;
+        margin-left: 10px;
+    }
+
+    .roadmap-header h2 {
+        font-size: 32px;
+    }
+
+    .phase-header h3 {
+        font-size: 22px;
+    }
+
+    .level-test__card {
+        padding: 36px 28px;
+    }
+
+    .level-test__content h2 {
+        font-size: 30px;
+    }
+
+    .decoration-circle {
+        width: 100px;
+        height: 100px;
+        font-size: 44px;
+    }
+
+    .roadmap-cta {
+        flex-direction: column;
+    }
+}

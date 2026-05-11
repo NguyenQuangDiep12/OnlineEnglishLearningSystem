@@ -32,7 +32,7 @@ class PaymentController extends Controller
                 ->with('success', 'Đã đăng ký khóa học miễn phí thành công!');
         }
 
-        // FIX: đổi từ pages.student.checkout → pages.checkout (file đang tồn tại)
+        // FIX: view đúng là 'pages.checkout' (không phải 'pages.student.checkout')
         return view('pages.checkout', compact('course'));
     }
 
@@ -54,7 +54,7 @@ class PaymentController extends Controller
             ]
         );
 
-        // Mock: confirm ngay
+        // Mock: confirm ngay (thực tế sẽ redirect sang cổng thanh toán)
         $this->paymentService->confirmPayment($payment->transaction_ref);
         $this->enrollmentService->enroll(session('user_id'), $courseId);
 

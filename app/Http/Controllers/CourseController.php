@@ -19,7 +19,7 @@ class CourseController extends Controller
         return view('pages.course', compact('courses'));
     }
 
-    public function show($id)
+    public function show(int $id)
     {
         $course = Course::with([
             'user',
