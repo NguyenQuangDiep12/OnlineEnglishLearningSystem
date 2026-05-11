@@ -12,7 +12,8 @@
 @use './layouts/page-header';
 @use './layouts/section-header';
 @use './layouts/section';
-@use './layouts/cta';
+@use './layouts/dashboard';
+
 
 // Components
 @use './components/buttons';
@@ -33,6 +34,7 @@
 @use './pages/student-dashboard';
 @use './pages/instructor-dashboard';
 @use './pages/admin-dashboard';
+@use './pages/roadmap';
 
 // Responsive
 @use './responsives/responsive';

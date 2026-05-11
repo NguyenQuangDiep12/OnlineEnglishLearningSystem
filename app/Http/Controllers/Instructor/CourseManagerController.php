@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Instructor;
 
 use App\Http\Controllers\Controller;
 use App\Models\Language;
+use App\Models\Section;
 use App\Services\Interfaces\ICourseService;
 use App\Services\Interfaces\ILessonService;
 use App\Services\Interfaces\ISectionService;
@@ -51,7 +52,7 @@ class CourseManagerController extends Controller
 
     public function edit(int $courseId)
     {
-        $course    = $this->courseService->findById($courseId);
+        $course = $this->courseService->findById($courseId);
         $this->authorizeInstructor($course);
 
         $sections  = $this->sectionService->getByCourse($courseId);
@@ -88,20 +89,15 @@ class CourseManagerController extends Controller
     {
         $course = $this->courseService->findById($courseId);
         $this->authorizeInstructor($course);
-
         $this->courseService->delete($courseId);
-
-        return redirect()->route('instructor.courses')
-            ->with('success', 'Đã xoá khóa học.');
+        return redirect()->route('instructor.courses')->with('success', 'Đã xoá khóa học.');
     }
 
     public function publish(int $courseId)
     {
         $course = $this->courseService->findById($courseId);
         $this->authorizeInstructor($course);
-
         $this->courseService->publish($courseId);
-
         return back()->with('success', 'Khóa học đã được xuất bản.');
     }
 
@@ -109,16 +105,18 @@ class CourseManagerController extends Controller
     {
         $course = $this->courseService->findById($courseId);
         $this->authorizeInstructor($course);
-
         $this->courseService->unpublish($courseId);
-
         return back()->with('success', 'Đã ẩn khóa học.');
     }
 
-    // ── Section ─────────────────────────────────────────────
+    // ── Section ────────────────────────────────────────────────
 
     public function storeSection(Request $request, int $courseId)
     {
+        // FIX: kiểm tra quyền trước khi thêm section
+        $course = $this->courseService->findById($courseId);
+        $this->authorizeInstructor($course);
+
         $data = $request->validate(['title' => 'required|string|max:255']);
 
         $lastOrder = $this->sectionService->getByCourse($courseId)->count();
@@ -133,6 +131,10 @@ class CourseManagerController extends Controller
 
     public function updateSection(Request $request, int $sectionId)
     {
+        // FIX: kiểm tra quyền qua section → course
+        $section = $this->sectionService->findById($sectionId);
+        $this->authorizeInstructorByCourseId($section->course_id);
+
         $data = $request->validate(['title' => 'required|string|max:255']);
         $this->sectionService->update($sectionId, $data);
         return back()->with('success', 'Đã cập nhật chương.');
@@ -140,21 +142,30 @@ class CourseManagerController extends Controller
 
     public function destroySection(int $sectionId)
     {
+        $section = $this->sectionService->findById($sectionId);
+        $this->authorizeInstructorByCourseId($section->course_id);
         $this->sectionService->delete($sectionId);
         return back()->with('success', 'Đã xoá chương.');
     }
 
     public function reorderSections(Request $request, int $courseId)
     {
+        // FIX: thêm authorization check
+        $course = $this->courseService->findById($courseId);
+        $this->authorizeInstructor($course);
+
         $request->validate(['order' => 'required|array']);
         $this->sectionService->reorder($courseId, $request->input('order'));
         return response()->json(['ok' => true]);
     }
 
-    // ── Lesson ───────────────────────────────────────────────
+    // ── Lesson ────────────────────────────────────────────────
 
     public function storeLesson(Request $request, int $sectionId)
     {
+        $section = $this->sectionService->findById($sectionId);
+        $this->authorizeInstructorByCourseId($section->course_id);
+
         $data = $request->validate([
             'title'            => 'required|string|max:255',
             'content'          => 'nullable|string',
@@ -192,18 +203,28 @@ class CourseManagerController extends Controller
 
     public function reorderLessons(Request $request, int $sectionId)
     {
+        // FIX: thêm authorization check
+        $section = $this->sectionService->findById($sectionId);
+        $this->authorizeInstructorByCourseId($section->course_id);
+
         $request->validate(['order' => 'required|array']);
         $this->lessonService->reorder($sectionId, $request->input('order'));
         return response()->json(['ok' => true]);
     }
 
-    // ── Helper ───────────────────────────────────────────────
+    // ── Helpers ────────────────────────────────────────────────
 
     private function authorizeInstructor($course): void
     {
-        if ($course->teacher_id !== session('user_id')) {
+        if ((int) $course->teacher_id !== (int) session('user_id')) {
             abort(403, 'Bạn không có quyền thao tác với khóa học này.');
         }
+    }
+
+    private function authorizeInstructorByCourseId(int $courseId): void
+    {
+        $course = $this->courseService->findById($courseId);
+        $this->authorizeInstructor($course);
     }
 }
 

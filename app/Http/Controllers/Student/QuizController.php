@@ -18,24 +18,17 @@ class QuizController extends Controller
         protected IQuizOptionService  $optionService,
     ) {}
 
-    /**
-     * Trang bắt đầu quiz (giới thiệu + lịch sử).
-     */
     public function show(int $quizId)
     {
-        $quiz     = $this->quizService->findById($quizId);
-        $userId   = session('user_id');
-        $canStart = $this->quizService->canAttempt($userId, $quizId);
-        $history  = $this->attemptService->getByQuiz($quizId)
-                        ->where('user_id', $userId);
+        $quiz      = $this->quizService->findById($quizId);
+        $userId    = session('user_id');
+        $canStart  = $this->quizService->canAttempt($userId, $quizId);
+        $history   = $this->attemptService->getByQuiz($quizId)->where('user_id', $userId);
         $bestScore = $this->attemptService->getBestScore($userId, $quizId);
 
         return view('pages.student.quiz', compact('quiz', 'canStart', 'history', 'bestScore'));
     }
 
-    /**
-     * Bắt đầu làm bài — tạo attempt mới.
-     */
     public function start(int $quizId)
     {
         $userId = session('user_id');
@@ -49,19 +42,14 @@ class QuizController extends Controller
         return redirect()->route('student.quiz.attempt', $attempt->quiz_attempt_id);
     }
 
-    /**
-     * Trang làm bài (hiển thị câu hỏi + options).
-     */
     public function attempt(int $attemptId)
     {
         $attempt = $this->attemptService->findById($attemptId);
 
-        // Chặn xem bài của người khác
         if ($attempt->user_id !== session('user_id')) {
             abort(403);
         }
 
-        // Đã nộp rồi → redirect kết quả
         if ($attempt->submitted_at) {
             return redirect()->route('student.quiz.result', $attemptId);
         }
@@ -73,7 +61,9 @@ class QuizController extends Controller
     }
 
     /**
-     * Nộp bài — lưu tất cả đáp án rồi tính điểm.
+     * FIX: Xử lý đúng cả single_choice và multiple_choice.
+     * multiple_choice gửi: answers[i][selected_option_id][] = [id1, id2, ...]
+     * single_choice gửi:   answers[i][selected_option_id]  = id
      */
     public function submit(Request $request, int $attemptId)
     {
@@ -83,13 +73,22 @@ class QuizController extends Controller
             abort(403);
         }
 
-        // answers = [['question_id' => 1, 'selected_option_id' => 3], ...]
-        $answers = $request->validate([
-            'answers'                      => 'required|array',
-            'answers.*.question_id'        => 'required|integer',
-            'answers.*.selected_option_id' => 'nullable|integer',
-            'answers.*.answer_text'        => 'nullable|string',
-        ])['answers'];
+        // Validate linh hoạt: selected_option_id có thể là int hoặc array
+        $validated = $request->validate([
+            'answers'               => 'required|array',
+            'answers.*.question_id' => 'required|integer',
+            'answers.*.answer_text' => 'nullable|string',
+        ]);
+
+        // Thu thập answers thủ công để giữ selected_option_id (cả scalar lẫn array)
+        $answers = [];
+        foreach ($request->input('answers', []) as $item) {
+            $answers[] = [
+                'question_id'        => $item['question_id'],
+                'selected_option_id' => $item['selected_option_id'] ?? null,
+                'answer_text'        => $item['answer_text'] ?? null,
+            ];
+        }
 
         $this->answerService->saveBulk($attemptId, $answers);
         $this->attemptService->submit($attemptId);
@@ -97,9 +96,6 @@ class QuizController extends Controller
         return redirect()->route('student.quiz.result', $attemptId);
     }
 
-    /**
-     * Trang kết quả sau khi nộp bài.
-     */
     public function result(int $attemptId)
     {
         $attempt = $this->attemptService->findById($attemptId);

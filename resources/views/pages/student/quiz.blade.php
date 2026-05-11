@@ -10,7 +10,6 @@
 @section('content')
 <div style="max-width:700px;margin:0 auto;">
 
-    {{-- Quiz header card --}}
     <div class="dash-card" style="text-align:center;padding:40px 32px 32px;">
         <div style="width:72px;height:72px;background:#eff6ff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:32px;">
             🧠
@@ -64,7 +63,6 @@
         @endif
     </div>
 
-    {{-- Lịch sử làm bài --}}
     @if($history->count() > 0)
     <div class="dash-card" style="margin-top:20px;">
         <div class="dash-card__header">
