@@ -26,8 +26,6 @@ class UserController extends Controller
         }
 
         $users = $query->paginate(20)->withQueryString();
-
-        // FIX: view name phải khớp với file resources/views/pages/admin/usermanager.blade.php
         return view('pages.admin.usermanager', compact('users'));
     }
 

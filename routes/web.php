@@ -52,7 +52,6 @@ Route::get('/instructors/{id}', [InstructorController::class, 'show'])->name('in
 Route::get('/blog',        [BlogController::class, 'index'])->name('blog.index'); // error (chua co bang Blog)
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show'); // error
 
-// Certificate verify (public) - FIX: đặt route cụ thể trước route có param
 Route::get('/verify',        [CertificateController::class, 'verify'])->name('certificate.verify'); // error
 Route::get('/verify/{code}', [CertificateController::class, 'show'])->name('certificate.show'); // error
 
@@ -101,7 +100,6 @@ Route::middleware('auth_session')->group(function () {
         Route::get('/after-payment',         [EnrollmentController::class, 'afterPayment'])->name('after-payment');
 
         // Lesson
-        // FIX: route name phải khớp route('student.lesson.show', [$courseId, $lessonId])
         Route::get('/courses/{courseId}/lessons/{lessonId}',
             [StudentLesson::class, 'show'])->name('lesson.show');
         Route::post('/lessons/{lessonId}/progress',
@@ -110,7 +108,6 @@ Route::middleware('auth_session')->group(function () {
             [StudentLesson::class, 'markComplete'])->name('lesson.complete');
 
         // Quiz
-        // FIX: đặt route có segment cụ thể ('attempt', 'result') TRƯỚC route có {quizId}
         Route::get('/quiz/attempt/{attemptId}', [StudentQuiz::class, 'attempt'])->name('quiz.attempt');
         Route::get('/quiz/result/{attemptId}',  [StudentQuiz::class, 'result'])->name('quiz.result');
         Route::get('/quiz/{quizId}',            [StudentQuiz::class, 'show'])->name('quiz.show');
@@ -120,7 +117,12 @@ Route::middleware('auth_session')->group(function () {
 
         // Payment
         Route::get('/checkout/{courseId}',  [PaymentController::class, 'checkout'])->name('checkout'); 
-        Route::post('/checkout/{courseId}', [PaymentController::class, 'createPayment'])->name('payment.create'); // error SQLSTATE[23505]: Unique violation: 7 ERROR: duplicate key value violates unique constraint "payments_pkey" DETAIL: Key (payment_id)=(2) already exists. (Connection: pgsql, Host: 127.0.0.1, Port: 5432, Database: OnlineEnglishLearningSystem, SQL: insert into "payments" ("user_id", "course_id", "amount", "transaction_ref", "payment_method", "status", "updated_at", "created_at") values (1001, 1, 457000.00, TXN-NCDPEGHNZNP4, credit_card, pending, 2026-05-11 10:19:33, 2026-05-11 10:19:33) returning "payment_id")
+        // error SQLSTATE[23505]: Unique violation: 7 ERROR: duplicate key value violates unique constraint "payments_pkey" 
+        // DETAIL: Key (payment_id)=(2) already exists. (Connection: pgsql, Host: 127.0.0.1, Port: 5432, Database: OnlineEnglishLearningSystem, 
+        // SQL: insert into "payments" ("user_id", "course_id", "amount", "transaction_ref", "payment_method", "status", "updated_at", "created_at") 
+        // values (1001, 1, 457000.00, TXN-NCDPEGHNZNP4, credit_card, pending, 2026-05-11 10:19:33, 2026-05-11 10:19:33) returning "payment_id")
+        Route::post('/checkout/{courseId}', [PaymentController::class, 'createPayment'])->name('payment.create'); 
+
         Route::get('/payment/history',      [PaymentController::class, 'history'])->name('payment.history'); // error 404 not found
 
         // Review
@@ -140,6 +142,7 @@ Route::middleware('auth_session')->group(function () {
         Route::get('/dashboard', [InstructorDashboard::class, 'index'])->name('dashboard');
         Route::get('/courses',   [InstructorDashboard::class, 'courses'])->name('courses');// error chua co ui phan courses cho instructor
 
+        // Course
         Route::get('/courses/create',          [CourseManagerController::class, 'create'])->name('create-course'); // error tao popup de tao course trong trang pages.instructor.courses
         Route::post('/courses',                [CourseManagerController::class, 'store'])->name('courses.store'); // error tao popup de tao course trong trang pages.instructor.courses
         Route::get('/courses/{courseId}/edit', [CourseManagerController::class, 'edit'])->name('courses.edit'); // error tao popup de tao course trong trang pages.instructor.courses
@@ -160,7 +163,7 @@ Route::middleware('auth_session')->group(function () {
         Route::delete('/lessons/{lessonId}',                 [CourseManagerController::class, 'destroyLesson'])->name('lessons.destroy'); // error 404 not found
         Route::post('/sections/{sectionId}/lessons/reorder', [CourseManagerController::class, 'reorderLessons'])->name('lessons.reorder'); // error 404 not found
 
-        // Quiz - FIX: segment cụ thể trước param
+        // Quiz
         Route::get('/quiz/show/{quizId}',           [QuizManagerController::class, 'show'])->name('quiz.show'); // error 404 not found
         Route::post('/lessons/{lessonId}/quiz',     [QuizManagerController::class, 'store'])->name('quiz.store'); // error 404 not found
         Route::put('/quiz/{quizId}',                [QuizManagerController::class, 'update'])->name('quiz.update'); // error 404 not found
