@@ -31,8 +31,6 @@ class PaymentController extends Controller
             return redirect()->route('student.dashboard')
                 ->with('success', 'Đã đăng ký khóa học miễn phí thành công!');
         }
-
-        // FIX: view đúng là 'pages.checkout' (không phải 'pages.student.checkout')
         return view('pages.checkout', compact('course'));
     }
 

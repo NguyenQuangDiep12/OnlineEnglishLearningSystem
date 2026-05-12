@@ -52,8 +52,8 @@ Route::get('/instructors/{id}', [InstructorController::class, 'show'])->name('in
 Route::get('/blog',        [BlogController::class, 'index'])->name('blog.index'); // error (chua co bang Blog)
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show'); // error
 
-Route::get('/verify',        [CertificateController::class, 'verify'])->name('certificate.verify'); // error
-Route::get('/verify/{code}', [CertificateController::class, 'show'])->name('certificate.show'); // error
+Route::get('/verify',        [CertificateController::class, 'verify'])->name('certificate.verify'); // done
+Route::get('/verify/{code}', [CertificateController::class, 'show'])->name('certificate.show'); // done
 
 // ============================================================
 // AUTH ROUTES
@@ -77,11 +77,11 @@ Route::post('/logout', [LoginController::class, 'logout'])
 Route::middleware('auth_session')->group(function () {
 
     // ── Profile ──────────────────────────────────────────────
-    Route::get('/profile',                  [ProfileController::class, 'show'])->name('profile.show'); // error -- chua co ui trang pages.profile
-    Route::get('/profile/edit',             [ProfileController::class, 'edit'])->name('profile.edit'); // error
-    Route::put('/profile',                  [ProfileController::class, 'update'])->name('profile.update'); // error
-    Route::post('/profile/avatar',          [ProfileController::class, 'updateAvatar'])->name('profile.avatar'); // error
-    Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.password'); // error
+    Route::get('/profile',                  [ProfileController::class, 'show'])->name('profile.show'); 
+    Route::get('/profile/edit',             [ProfileController::class, 'edit'])->name('profile.edit'); // error -- profile-edit chua co
+    Route::put('/profile',                  [ProfileController::class, 'update'])->name('profile.update'); // done
+    Route::post('/profile/avatar',          [ProfileController::class, 'updateAvatar'])->name('profile.avatar'); // error -- hien thi ui anh tren profile sai
+    Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.password'); // done
 
     // ── Payment callback (shared) ────────────────────────────
     Route::get('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
@@ -95,17 +95,14 @@ Route::middleware('auth_session')->group(function () {
         Route::get('/my-courses', [StudentDashboard::class, 'myCourses'])->name('my-courses');
 
         // Enrollment
-        Route::post('/enroll/{courseId}',    [EnrollmentController::class, 'enroll'])->name('enroll');
-        Route::delete('/unenroll/{courseId}',[EnrollmentController::class, 'unenroll'])->name('unenroll');
-        Route::get('/after-payment',         [EnrollmentController::class, 'afterPayment'])->name('after-payment');
+        Route::post('/enroll/{courseId}',    [EnrollmentController::class, 'enroll'])->name('enroll'); // done
+        Route::delete('/unenroll/{courseId}',[EnrollmentController::class, 'unenroll'])->name('unenroll'); // done
+        Route::get('/after-payment',         [EnrollmentController::class, 'afterPayment'])->name('after-payment'); // error: App\Services\PaymentService::findByRef(): Argument #1 ($transactionRef) must be of type string, null given, called in C:\OnlineEnglishLearningSystem\app\Http\Controllers\Student\EnrollmentController.php on line 51
 
         // Lesson
-        Route::get('/courses/{courseId}/lessons/{lessonId}',
-            [StudentLesson::class, 'show'])->name('lesson.show');
-        Route::post('/lessons/{lessonId}/progress',
-            [StudentLesson::class, 'updateProgress'])->name('lesson.progress');
-        Route::post('/courses/{courseId}/lessons/{lessonId}/complete',
-            [StudentLesson::class, 'markComplete'])->name('lesson.complete');
+        Route::get('/courses/{courseId}/lessons/{lessonId}',[StudentLesson::class, 'show'])->name('lesson.show'); // error: ko co nut truy cap 
+        Route::post('/lessons/{lessonId}/progress',[StudentLesson::class, 'updateProgress'])->name('lesson.progress'); // error: ko biet su dung
+        Route::post('/courses/{courseId}/lessons/{lessonId}/complete',[StudentLesson::class, 'markComplete'])->name('lesson.complete'); // error: ko biet su dung
 
         // Quiz
         Route::get('/quiz/attempt/{attemptId}', [StudentQuiz::class, 'attempt'])->name('quiz.attempt');
@@ -116,11 +113,7 @@ Route::middleware('auth_session')->group(function () {
             [StudentQuiz::class, 'submit'])->name('quiz.submit');
 
         // Payment
-        Route::get('/checkout/{courseId}',  [PaymentController::class, 'checkout'])->name('checkout'); 
-        // error SQLSTATE[23505]: Unique violation: 7 ERROR: duplicate key value violates unique constraint "payments_pkey" 
-        // DETAIL: Key (payment_id)=(2) already exists. (Connection: pgsql, Host: 127.0.0.1, Port: 5432, Database: OnlineEnglishLearningSystem, 
-        // SQL: insert into "payments" ("user_id", "course_id", "amount", "transaction_ref", "payment_method", "status", "updated_at", "created_at") 
-        // values (1001, 1, 457000.00, TXN-NCDPEGHNZNP4, credit_card, pending, 2026-05-11 10:19:33, 2026-05-11 10:19:33) returning "payment_id")
+        Route::get('/checkout/{courseId}',  [PaymentController::class, 'checkout'])->name('checkout');
         Route::post('/checkout/{courseId}', [PaymentController::class, 'createPayment'])->name('payment.create'); 
 
         Route::get('/payment/history',      [PaymentController::class, 'history'])->name('payment.history'); // error 404 not found
