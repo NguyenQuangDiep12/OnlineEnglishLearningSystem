@@ -346,25 +346,21 @@ SELECT
 FROM generate_series(1, 1000) gs
 ON CONFLICT DO NOTHING;
 
--- ============================================================
--- TỔNG KẾT
--- ============================================================
--- Bảng             | Số dòng
--- language         | 10
--- user             | 1,000
--- course           | 1,000
--- section          | 1,000
--- lesson           | 1,000
--- quiz             | 1,000
--- quiz_question    | 1,000
--- quiz_option      | 4,000
--- enrollment       | 1,000
--- payment          | 1,000
--- quiz_attempt     | 1,000
--- quiz_answer      | 1,000
--- lesson_progress  | 1,000
--- course_review    | 1,000
--- certificate      | 1,000
--- ============================================================
--- Tổng cộng: ~16,010 dòng
--- ============================================================
+-- reset Postgresql Sequence sau khi chay DataSample.sql
+-- Chay sau khi tao bang
+
+SELECT setval('users_user_id_seq',          (SELECT MAX(user_id)          FROM users)          + 1);
+SELECT setval('courses_course_id_seq',       (SELECT MAX(course_id)        FROM courses)        + 1);
+SELECT setval('languages_language_id_seq',   (SELECT MAX(language_id)      FROM languages)      + 1);
+SELECT setval('sections_section_id_seq',     (SELECT MAX(section_id)       FROM sections)       + 1);
+SELECT setval('lessons_lesson_id_seq',       (SELECT MAX(lesson_id)        FROM lessons)        + 1);
+SELECT setval('quizzes_quiz_id_seq',         (SELECT MAX(quiz_id)          FROM quizzes)        + 1);
+SELECT setval('quiz_questions_quiz_question_id_seq', (SELECT MAX(quiz_question_id) FROM quiz_questions) + 1);
+SELECT setval('quiz_options_quiz_option_id_seq',     (SELECT MAX(quiz_option_id)   FROM quiz_options)   + 1);
+SELECT setval('quiz_attempts_quiz_attempt_id_seq',   (SELECT MAX(quiz_attempt_id)  FROM quiz_attempts)  + 1);
+SELECT setval('quiz_answers_quiz_answer_id_seq',     (SELECT MAX(quiz_answer_id)   FROM quiz_answers)   + 1);
+SELECT setval('enrollments_enrollment_id_seq',       (SELECT MAX(enrollment_id)    FROM enrollments)    + 1);
+SELECT setval('payments_payment_id_seq',             (SELECT MAX(payment_id)       FROM payments)       + 1);
+SELECT setval('lesson_progresses_progress_id_seq',   (SELECT MAX(progress_id)      FROM lesson_progresses) + 1);
+SELECT setval('course_reviews_course_review_id_seq', (SELECT MAX(course_review_id) FROM course_reviews) + 1);
+SELECT setval('certificates_certificate_id_seq',     (SELECT MAX(certificate_id)   FROM certificates)   + 1);

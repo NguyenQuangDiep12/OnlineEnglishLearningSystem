@@ -27,8 +27,6 @@ class LessonController extends Controller
                 ->withErrors('Bạn cần đăng ký khóa học trước khi học bài này.');
         }
 
-        // FIX: eager load section.course.sections.lessons để sidebar hoạt động đúng
-        // tránh N+1 query
         $lesson = $this->lessonService->findById($lessonId);
         $lesson->load(['section.course.sections.lessons']);
 
@@ -39,9 +37,7 @@ class LessonController extends Controller
             ->pluck('lesson_id');
 
         $courseProgress = $this->progressService->getCourseProgress($userId, $courseId);
-
-        // FIX: view đúng là 'pages.lesson' (không phải 'pages.student.lesson')
-        return view('pages.lesson', compact(
+        return view('pages.student.lesson', compact(
             'lesson', 'progress', 'completedIds', 'courseProgress', 'courseId'
         ));
     }
